@@ -1,0 +1,39 @@
+{
+  "name": "color-zone",
+  "version": "1.0.0",
+  "description": "A CSS framework for modern web development.",
+  "main": "./index.cjs",
+  "module": "./index.js",
+  "types": "./index.d.ts",
+  "type": "module",
+  "scripts": {
+    "start": "makepack start",
+    "build": "makepack build",
+    "release": "makepack release"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "makepack": "^1.7.15",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "typescript": "^5.9.3"
+  },
+  "keywords": [
+    "css",
+    "color-zone",
+    "styles",
+    "web development",
+    "frontend"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/devnax/color-zone.git"
+  },
+  "bugs": {
+    "url": "https://github.com/devnax/color-zone/issues"
+  },
+  "dependencies": {}
+}
