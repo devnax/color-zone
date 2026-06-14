@@ -12,6 +12,7 @@ interface GradientBarProps {
   onSelectPoint: (index: number) => void;
   onMovePoint: (index: number, left: number) => void;
   onAddPoint: (left: number) => void;
+  onRemovePoint: (index: number) => void;
   width: number;
 }
 
@@ -35,11 +36,12 @@ export const GradientBar: React.FC<GradientBarProps> = ({
   onSelectPoint,
   onMovePoint,
   onAddPoint,
+  onRemovePoint,
   width,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const draggingIdx = useRef<number | null>(null);
-  const HEIGHT = 28;
+  const HEIGHT = 10;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -118,75 +120,104 @@ export const GradientBar: React.FC<GradientBarProps> = ({
     };
   }, [onMovePoint]);
 
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "Backspace") return;
+
+      // optional: avoid deleting while typing in inputs
+      const target = e.target as HTMLElement;
+      const isInput =
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        (target as any).isContentEditable;
+
+      if (isInput) return;
+
+      if (selectedPoint == null) return;
+      if (stops.length <= 1) return; // prevent empty gradient
+
+      // you need to add this prop
+      onRemovePoint(selectedPoint);
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [selectedPoint, stops.length, onRemovePoint]);
+
   return (
     <div
-      style={{ position: "relative", height: HEIGHT + 20, userSelect: "none" }}
+      style={{
+        height: HEIGHT + 2,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
     >
-      <div
-        style={{
-          position: "relative",
-          borderRadius: 6,
-          overflow: "hidden",
-          height: HEIGHT,
-        }}
-      >
-        <canvas
-          ref={canvasRef}
-          width={width}
-          height={HEIGHT}
+      <div style={{ position: "relative", height: HEIGHT, userSelect: "none" }}>
+        <div
           style={{
-            display: "block",
-            width: "100%",
+            position: "relative",
+            borderRadius: 7,
+            overflow: "hidden",
             height: HEIGHT,
-            cursor: "copy",
+            boxShadow: "0 0 0 1px rgba(100, 100, 100, 0.5)",
           }}
-          onMouseDown={handleCanvasDown}
-        />
-      </div>
-      {stops.map((stop, idx) => {
-        const rgba = parseColor(stop.color) ?? { r: 0, g: 0, b: 0, a: 1 };
-        const isSelected = idx === selectedPoint;
-        return (
-          <div
-            key={idx}
+        >
+          <canvas
+            ref={canvasRef}
+            width={width}
+            height={HEIGHT}
             style={{
-              position: "absolute",
-              top: HEIGHT,
-              left: `${stop.left}%`,
-              transform: "translateX(-50%)",
-              cursor: "grab",
-              zIndex: isSelected ? 10 : 5,
+              display: "block",
+              width: "100%",
+              height: HEIGHT,
+              cursor: "copy",
             }}
-            onMouseDown={(e) => {
-              e.stopPropagation();
-              draggingIdx.current = idx;
-              onSelectPoint(idx);
-            }}
-            onTouchStart={(e) => {
-              e.stopPropagation();
-              draggingIdx.current = idx;
-              onSelectPoint(idx);
-            }}
-          >
-            <svg width="16" height="18" viewBox="0 0 16 18">
-              <polygon
-                points="0,4 16,4 16,12 8,18 0,12"
-                fill={`rgba(${rgba.r},${rgba.g},${rgba.b},${rgba.a})`}
-                stroke={isSelected ? "#333" : "#aaa"}
-                strokeWidth={isSelected ? 2 : 1}
-              />
-              <rect
-                x="2"
-                y="0"
-                width="12"
-                height="5"
-                rx="2"
-                fill={isSelected ? "#333" : "#aaa"}
-              />
-            </svg>
-          </div>
-        );
-      })}
+            onMouseDown={handleCanvasDown}
+          />
+        </div>
+        {stops.map((stop, idx) => {
+          const rgba = parseColor(stop.color) ?? { r: 0, g: 0, b: 0, a: 1 };
+          const isSelected = idx === selectedPoint;
+
+          return (
+            <div
+              title={stops.length > 2 ? "Backspace to remove" : ""}
+              key={idx}
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: `${stop.left}%`,
+                transform: "translate(-50%, -50%)",
+                width: HEIGHT,
+                height: HEIGHT,
+                borderRadius: "50%",
+                cursor: "pointer",
+                zIndex: isSelected ? 10 : 5,
+
+                background: `rgba(${rgba.r},${rgba.g},${rgba.b},${rgba.a})`,
+                border: "2px solid #fff",
+                boxShadow: isSelected
+                  ? "0 0 0 2px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.25)"
+                  : "0 0 0 1.5px rgba(0,0,0,0.35)",
+
+                transition: "transform 120ms ease, box-shadow 120ms ease",
+                transformOrigin: "center",
+              }}
+              onMouseDown={(e) => {
+                e.stopPropagation();
+                draggingIdx.current = idx;
+                onSelectPoint(idx);
+              }}
+              onTouchStart={(e) => {
+                e.stopPropagation();
+                draggingIdx.current = idx;
+                onSelectPoint(idx);
+              }}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 };

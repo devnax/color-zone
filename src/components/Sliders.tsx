@@ -14,7 +14,7 @@ export const HueSlider: React.FC<HueSliderProps> = ({
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const dragging = useRef(false);
-  const HEIGHT = 14;
+  const HEIGHT = 10;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -32,9 +32,12 @@ export const HueSlider: React.FC<HueSliderProps> = ({
     (e: React.MouseEvent | React.TouchEvent | MouseEvent | TouchEvent) => {
       const canvas = canvasRef.current;
       if (!canvas) return;
+      // Always use getBoundingClientRect — canvas CSS width != canvas.width attribute
       const rect = canvas.getBoundingClientRect();
       const clientX =
-        "touches" in e ? e.touches[0].clientX : (e as MouseEvent).clientX;
+        "touches" in e
+          ? (e as TouchEvent).touches[0].clientX
+          : (e as MouseEvent).clientX;
       const h = Math.max(
         0,
         Math.min(360, ((clientX - rect.left) / rect.width) * 360),
@@ -67,8 +70,8 @@ export const HueSlider: React.FC<HueSliderProps> = ({
     position: "absolute",
     top: "50%",
     left: (hue / 360) * 100 + "%",
-    width: 16,
-    height: 16,
+    width: HEIGHT,
+    height: HEIGHT,
     borderRadius: "50%",
     border: "2px solid #fff",
     boxShadow: "0 0 0 1.5px rgba(0,0,0,0.35)",
@@ -78,14 +81,7 @@ export const HueSlider: React.FC<HueSliderProps> = ({
   };
 
   return (
-    <div
-      style={{
-        position: "relative",
-        height: HEIGHT,
-        borderRadius: 7,
-        overflow: "visible",
-      }}
-    >
+    <div style={{ position: "relative", height: HEIGHT, overflow: "visible" }}>
       <canvas
         ref={canvasRef}
         width={width}
@@ -144,7 +140,7 @@ export const AlphaSlider: React.FC<AlphaSliderProps> = ({
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const dragging = useRef(false);
-  const HEIGHT = 14;
+  const HEIGHT = 10;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -156,6 +152,7 @@ export const AlphaSlider: React.FC<AlphaSliderProps> = ({
     ctx.fillStyle = pat;
     ctx.fillRect(0, 0, w, HEIGHT);
     const [r, g, b] = hsv2rgb(hue, sat, val);
+    if (isNaN(r) || isNaN(g) || isNaN(b)) return;
     const g2 = ctx.createLinearGradient(0, 0, w, 0);
     g2.addColorStop(0, `rgba(${r},${g},${b},0)`);
     g2.addColorStop(1, `rgba(${r},${g},${b},1)`);
@@ -167,9 +164,12 @@ export const AlphaSlider: React.FC<AlphaSliderProps> = ({
     (e: React.MouseEvent | React.TouchEvent | MouseEvent | TouchEvent) => {
       const canvas = canvasRef.current;
       if (!canvas) return;
+      // Use getBoundingClientRect for correct position
       const rect = canvas.getBoundingClientRect();
       const clientX =
-        "touches" in e ? e.touches[0].clientX : (e as MouseEvent).clientX;
+        "touches" in e
+          ? (e as TouchEvent).touches[0].clientX
+          : (e as MouseEvent).clientX;
       const a = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
       onChange(a);
     },
@@ -196,29 +196,24 @@ export const AlphaSlider: React.FC<AlphaSliderProps> = ({
   }, [track]);
 
   const [r, g, b] = hsv2rgb(hue, sat, val);
+  const safeAlpha = isNaN(alpha) ? 1 : alpha;
+
   const thumbStyle: React.CSSProperties = {
     position: "absolute",
     top: "50%",
-    left: alpha * 100 + "%",
-    width: 16,
-    height: 16,
+    left: safeAlpha * 100 + "%",
+    width: HEIGHT,
+    height: HEIGHT,
     borderRadius: "50%",
     border: "2px solid #fff",
     boxShadow: "0 0 0 1.5px rgba(0,0,0,0.35)",
-    background: `rgba(${r},${g},${b},${alpha})`,
+    background: `rgba(${r},${g},${b},${safeAlpha})`,
     transform: "translate(-50%,-50%)",
     pointerEvents: "none",
   };
 
   return (
-    <div
-      style={{
-        position: "relative",
-        height: HEIGHT,
-        borderRadius: 7,
-        overflow: "visible",
-      }}
-    >
+    <div style={{ position: "relative", height: HEIGHT, overflow: "visible" }}>
       <canvas
         ref={canvasRef}
         width={width}

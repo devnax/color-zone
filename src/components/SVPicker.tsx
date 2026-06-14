@@ -25,12 +25,12 @@ export const SVPicker: React.FC<SVPickerProps> = ({
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d")!;
-    const w = canvas.width,
-      h = canvas.height;
+    const w = canvas.width;
+    const h = canvas.height;
     ctx.clearRect(0, 0, w, h);
     const gH = ctx.createLinearGradient(0, 0, w, 0);
     gH.addColorStop(0, "#fff");
-    gH.addColorStop(1, `hsl(${hue},100%,50%)`);
+    gH.addColorStop(1, `hsl(${hue}, 100%, 50%)`);
     ctx.fillStyle = gH;
     ctx.fillRect(0, 0, w, h);
     const gV = ctx.createLinearGradient(0, 0, 0, h);
@@ -44,11 +44,16 @@ export const SVPicker: React.FC<SVPickerProps> = ({
     (e: React.MouseEvent | React.TouchEvent | MouseEvent | TouchEvent) => {
       const canvas = canvasRef.current;
       if (!canvas) return;
+      // Use getBoundingClientRect for correct position — canvas CSS size may differ from attribute size
       const rect = canvas.getBoundingClientRect();
       const clientX =
-        "touches" in e ? e.touches[0].clientX : (e as MouseEvent).clientX;
+        "touches" in e
+          ? (e as TouchEvent).touches[0].clientX
+          : (e as MouseEvent).clientX;
       const clientY =
-        "touches" in e ? e.touches[0].clientY : (e as MouseEvent).clientY;
+        "touches" in e
+          ? (e as TouchEvent).touches[0].clientY
+          : (e as MouseEvent).clientY;
       const s = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
       const v = Math.max(
         0,
@@ -79,6 +84,7 @@ export const SVPicker: React.FC<SVPickerProps> = ({
   }, [track]);
 
   const [r, g, b] = hsv2rgb(hue, sat, val);
+
   const thumbStyle: React.CSSProperties = {
     position: "absolute",
     left: sat * 100 + "%",
@@ -91,7 +97,7 @@ export const SVPicker: React.FC<SVPickerProps> = ({
     background: `rgb(${r},${g},${b})`,
     transform: "translate(-50%,-50%)",
     pointerEvents: "none",
-  } as React.CSSProperties;
+  };
 
   return (
     <div
@@ -111,7 +117,7 @@ export const SVPicker: React.FC<SVPickerProps> = ({
         height={height}
         style={{
           display: "block",
-          cursor: "crosshair",
+          cursor: "pointer",
           width: "100%",
           height: "100%",
         }}
