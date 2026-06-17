@@ -1,6 +1,6 @@
 {
   "name": "color-zone",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A CSS framework for modern web development.",
   "main": "./index.cjs",
   "module": "./index.js",

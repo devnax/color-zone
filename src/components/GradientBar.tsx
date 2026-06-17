@@ -41,7 +41,7 @@ export const GradientBar: React.FC<GradientBarProps> = ({
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const draggingIdx = useRef<number | null>(null);
-  const HEIGHT = 10;
+  const HEIGHT = 9;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -147,7 +147,7 @@ export const GradientBar: React.FC<GradientBarProps> = ({
   return (
     <div
       style={{
-        height: HEIGHT + 2,
+        height: HEIGHT,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -160,7 +160,7 @@ export const GradientBar: React.FC<GradientBarProps> = ({
             borderRadius: 7,
             overflow: "hidden",
             height: HEIGHT,
-            boxShadow: "0 0 0 1px rgba(100, 100, 100, 0.5)",
+            boxShadow: "0 0 0 0.5px rgba(100, 100, 100, 0.5)",
           }}
         >
           <canvas
