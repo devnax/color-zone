@@ -57,7 +57,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
     [currentStop.color],
   );
 
-  const [hsvFromColor, satFromColor] = useMemo(
+  const [hsvFromColor, satFromColor, valFromColor] = useMemo(
     () => rgb2hsv(currentRgba.r, currentRgba.g, currentRgba.b),
     [currentRgba],
   );
@@ -151,9 +151,6 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
     setHexInputVal(
       toHexA(currentRgba.r, currentRgba.g, currentRgba.b, currentRgba.a),
     );
-  }, [currentRgba]);
-
-  useEffect(() => {
     if (isDraggingSV.current) {
       isDraggingSV.current = false;
       return;
@@ -162,6 +159,13 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
       setHue(hsvFromColor);
     }
   }, [currentRgba]);
+
+  useEffect(() => {
+    const sat = isNaN(satFromColor) ? 0 : satFromColor;
+    const val = isNaN(valFromColor) ? 0 : valFromColor;
+    setSat(sat);
+    setVal(val);
+  }, []);
 
   const handleHexCommit = useCallback(
     (hex: string) => {

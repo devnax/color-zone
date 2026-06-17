@@ -1,6 +1,6 @@
 {
   "name": "color-zone",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A flexible React color picker library providing advanced color selection features including HSV, RGB, HEX formats and eyedropper support.",
   "main": "./index.cjs",
   "module": "./index.js",
