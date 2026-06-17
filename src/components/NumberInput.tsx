@@ -39,6 +39,7 @@ const NumberInput = ({
   max,
   suffix,
 }: NumberInputProps) => {
+  suffix ??= "";
   const ref = useDraggableNumber({ min, max, suffix });
 
   return (

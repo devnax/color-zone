@@ -1,7 +1,7 @@
 {
   "name": "color-zone",
-  "version": "1.0.1",
-  "description": "A CSS framework for modern web development.",
+  "version": "1.0.2",
+  "description": "A flexible React color picker library providing advanced color selection features including HSV, RGB, HEX formats and eyedropper support.",
   "main": "./index.cjs",
   "module": "./index.js",
   "types": "./index.d.ts",
@@ -20,13 +20,12 @@
     "typescript": "^5.9.3"
   },
   "keywords": [
-    "css",
+    "react-color-picker",
     "color-zone",
-    "styles",
-    "web development",
-    "frontend"
+    "color-picker",
+    "react"
   ],
-  "author": "Your Name",
+  "author": "Devnax",
   "license": "MIT",
   "repository": {
     "type": "git",
