@@ -1,7 +1,7 @@
 {
   "name": "color-zone",
-  "version": "1.0.3",
-  "description": "A flexible React color picker library providing advanced color selection features including HSV, RGB, HEX formats and eyedropper support.",
+  "version": "1.0.4",
+  "description": "A zero-dependency React color picker with HSV, RGB, HSL, HEX, gradient support, EyeDropper API, and a headless useColorPicker hook for custom UIs.",
   "main": "./index.cjs",
   "module": "./index.js",
   "types": "./index.d.ts",
@@ -20,10 +20,20 @@
     "typescript": "^5.9.3"
   },
   "keywords": [
+    "react",
+    "color-picker",
     "react-color-picker",
     "color-zone",
-    "color-picker",
-    "react"
+    "gradient-picker",
+    "hsv",
+    "hsl",
+    "rgb",
+    "hex",
+    "eyedropper",
+    "color-input",
+    "color-selector",
+    "typescript",
+    "ui-component"
   ],
   "author": "Devnax",
   "license": "MIT",
